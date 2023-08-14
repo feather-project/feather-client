@@ -21,7 +21,7 @@ class ButtonComponent extends StatefulWidget {
     this.borderRadius,
     required this.onPressed,
     this.clickable = true,
-    this.color = ThemeUtils.kAccent,
+    this.color = ThemeUtils.kPrimaryButton,
     this.hover,
   });
 

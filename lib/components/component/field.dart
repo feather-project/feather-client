@@ -57,6 +57,7 @@ class FieldComponentState extends State<FieldComponent> {
             0,
           ),
           child: TextFormField(
+            keyboardType: isEnlarged ? TextInputType.multiline : null,
             controller: widget.controller,
             obscureText: obscureText,
             validator: (value) {
@@ -74,15 +75,14 @@ class FieldComponentState extends State<FieldComponent> {
                 setState(() => errorText = error);
               }
             },
-            maxLines: isEnlarged ? widget.height ~/ 25 : 1,
-            style: StyleUtils.regularDarkStyle,
+            maxLines: isEnlarged ? 6 : 1,
+            style: StyleUtils.regularLightStyle,
             decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding:
-                  isEnlarged ? const EdgeInsets.only(top: 6) : EdgeInsets.zero,
+                  isEnlarged ? const EdgeInsets.only(top: 5) : EdgeInsets.zero,
               hintText: widget.hintText,
-              hintStyle: StyleUtils.regularFadeDarkStyle,
-              labelStyle: StyleUtils.regularDarkStyle,
+              hintStyle: StyleUtils.regularFadeLightStyle,
               errorStyle: const TextStyle(color: Colors.transparent),
               alignLabelWithHint: true,
             ),

@@ -4,35 +4,31 @@ import 'theme.dart';
 
 class StyleUtils {
   static const TextStyle smallLightStyle = TextStyle(
-    fontFamily: "Graphik",
-    fontSize: 14,
-    fontWeight: FontWeight.bold,
-    color: Colors.white,
-  );
+      fontFamily: "Graphik",
+      fontSize: 14,
+      fontWeight: FontWeight.bold,
+      color: ThemeUtils.kText);
   static const TextStyle mediumLightStyle = TextStyle(
     fontFamily: "Graphik",
     fontSize: 16,
     fontWeight: FontWeight.bold,
-    color: Colors.white,
+    color: ThemeUtils.kText,
   );
   static const TextStyle regularLightStyle = TextStyle(
-    fontFamily: "Graphik",
-    fontSize: 18,
-    fontWeight: FontWeight.bold,
-    color: Colors.white,
-  );
+      fontFamily: "Graphik",
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+      color: ThemeUtils.kText);
   static const TextStyle highLightStyle = TextStyle(
-    fontFamily: "Graphik",
-    fontSize: 24,
-    fontWeight: FontWeight.bold,
-    color: Colors.white,
-  );
+      fontFamily: "Graphik",
+      fontSize: 24,
+      fontWeight: FontWeight.bold,
+      color: ThemeUtils.kText);
   static const TextStyle bigLightStyle = TextStyle(
-    fontFamily: "Graphik",
-    fontSize: 35,
-    fontWeight: FontWeight.bold,
-    color: Colors.white,
-  );
+      fontFamily: "Graphik",
+      fontSize: 35,
+      fontWeight: FontWeight.bold,
+      color: ThemeUtils.kText);
 
   static const TextStyle smallDarkStyle = TextStyle(
     fontFamily: "Graphik",
@@ -82,7 +78,7 @@ class StyleUtils {
     fontFamily: "Graphik",
     fontSize: 18,
     fontWeight: FontWeight.bold,
-    color: Colors.white54,
+    color: ThemeUtils.kText,
   );
 
   static const TextStyle errorStyle = TextStyle(

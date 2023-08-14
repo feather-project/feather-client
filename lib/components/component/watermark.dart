@@ -15,13 +15,13 @@ class WatermarkComponent extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text(
-          ConfigUtils.kWatermark,
+          EnvUtils.kWatermark,
           style: StyleUtils.smallDarkStyle,
           textAlign: TextAlign.center,
         ),
         BoxComponent.customHeight(5),
         const Text(
-          "Version ${ConfigUtils.kVersion}",
+          "Version ${EnvUtils.kVersion}",
           style: StyleUtils.smallDarkStyle,
           textAlign: TextAlign.center,
         )

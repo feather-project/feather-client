@@ -15,7 +15,7 @@ class ContainerComponent extends StatelessWidget {
     super.key,
     this.width,
     this.height,
-    this.padding = const EdgeInsets.all(6.0),
+    this.padding = const EdgeInsets.all(6),
     this.borderRadius,
     this.border,
     this.shape = BoxShape.rectangle,

@@ -1,7 +1,15 @@
+import 'package:feather_client/miscellaneous/notifiers/config.dart';
+import 'package:feather_client/miscellaneous/platforms.dart';
 import 'package:flutter/material.dart';
+
+import 'package:feather_client/pages/pages.dart';
+import 'package:feather_client/utils/utils.dart';
+import 'package:provider/provider.dart';
+import 'package:window_manager/window_manager.dart';
 
 void main() {
   runApp(const Client());
+  WindowManager.instance.setMinimumSize(const Size(1200, 650));
 }
 
 class Client extends StatelessWidget {
@@ -9,10 +17,19 @@ class Client extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
+    Platforms.getInstallDirectory().createSync(recursive: true);
+
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ConfigNotifier>(
+          create: (_) => ConfigNotifier(),
+        ),
+      ],
+      child: MaterialApp(
+        title: "${EnvUtils.kProject} - ${EnvUtils.kName}",
+        home: const DashboardPage(),
+        theme: ThemeData(
+          scaffoldBackgroundColor: ThemeUtils.kBackground,
         ),
       ),
     );

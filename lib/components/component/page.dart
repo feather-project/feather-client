@@ -4,32 +4,31 @@ import 'package:window_manager/window_manager.dart';
 
 import 'package:feather_client/utils/utils.dart';
 
-class CustomPage extends StatefulWidget {
+class PageComponent extends StatefulWidget {
   final String name;
   final Widget? sideBar;
   final Color? color;
   final List<Widget> content;
   final bool scrollabled;
 
-  const CustomPage({
+  const PageComponent({
     super.key,
-    this.color,
+    required this.name,
     required this.content,
+    this.color,
     this.sideBar,
     this.scrollabled = true,
-    required this.name,
   });
 
   @override
-  State<CustomPage> createState() => _CustomPageState();
+  State<PageComponent> createState() => _PageComponentState();
 }
 
-class _CustomPageState extends State<CustomPage> {
+class _PageComponentState extends State<PageComponent> {
   @override
   void initState() {
     super.initState();
-
-    WindowManager.instance.setTitle("${ConfigUtils.kProject} - ${widget.name}");
+    WindowManager.instance.setTitle("${EnvUtils.kProject} - ${widget.name}");
   }
 
   @override
