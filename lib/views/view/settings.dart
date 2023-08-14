@@ -1,8 +1,10 @@
 import 'dart:io';
 
-import 'package:feather_client/miscellaneous/platforms.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'package:feather_client/miscellaneous/platforms.dart';
+import 'package:feather_client/miscellaneous/notifiers/config.dart';
 import 'package:feather_client/components/components.dart';
 import 'package:feather_client/utils/utils.dart';
 
@@ -14,6 +16,8 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
+  late final configNotify = Provider.of<ConfigNotifier>(context, listen: false);
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -53,6 +57,8 @@ class _SettingsViewState extends State<SettingsView> {
                     context: context,
                     builder: (context) => _buildSuccessDialog(),
                   );
+
+                  configNotify.clear();
                 },
               ),
               BoxComponent.mediumHeight,

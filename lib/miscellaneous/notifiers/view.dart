@@ -5,6 +5,8 @@ class ViewNotifier extends ChangeNotifier {
   Widget widget = const ConnectView();
 
   void set(Widget widget) {
+    if (this.widget == widget) return;
+
     this.widget = widget;
     _notify();
   }

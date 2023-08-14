@@ -10,20 +10,22 @@ import 'package:feather_client/models/models.dart';
 import 'package:feather_client/utils/utils.dart';
 
 class ConfigNotifier extends ChangeNotifier {
-  List<ConfigModel> configs = [];
+  Map<String, ConfigModel> configs = {};
 
   void add(ConfigModel model) {
-    configs.add(model);
+    configs[model.getUuid()] = model;
     _notify();
   }
 
   void addAll(List<ConfigModel> models) {
-    configs.addAll(models);
+    for (final model in models) {
+      configs[model.getUuid()] = model;
+    }
     _notify();
   }
 
-  void remove(ConfigModel model) {
-    configs.remove(model);
+  void remove(String uuid) {
+    configs.remove(uuid);
     _notify();
   }
 
@@ -38,11 +40,11 @@ class ConfigNotifier extends ChangeNotifier {
   }
 
   List<ConfigModel> getConfigs() {
-    return configs;
+    return configs.values.toList();
   }
 
   List<ConfigModel> getFavorites() {
-    return configs.where((e) => e.favorite).toList();
+    return configs.values.where((e) => e.favorite).toList();
   }
 
   void load() {
@@ -60,7 +62,7 @@ class ConfigNotifier extends ChangeNotifier {
     final json = {
       "type": "Feather Viewer",
       "version": EnvUtils.kVersion,
-      "connections": configs.map((e) => e.toJson()).toList()
+      "connections": configs.values.map((e) => e.toJson()).toList()
     };
 
     await XFile.fromData(

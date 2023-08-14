@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:provider/provider.dart';
 
+import 'package:feather_client/miscellaneous/notifiers/config.dart';
 import 'package:feather_client/miscellaneous/validations.dart';
 import 'package:feather_client/components/components.dart';
 import 'package:feather_client/models/models.dart';
@@ -16,14 +18,17 @@ class ConnectView extends StatefulWidget {
 }
 
 class _ConnectViewState extends State<ConnectView> {
-  final uri = TextEditingController(text: "netlog://localhost:10542/");
-  final name = TextEditingController();
+  late final configNotify = Provider.of<ConfigNotifier>(context, listen: false);
 
-  final connection = ConfigModel();
+  final uri = TextEditingController(text: "netlog://localhost:10542/");
+  ConfigModel config = ConfigModel();
+
   bool isNameFieldHoverred = false;
 
   @override
   Widget build(BuildContext context) {
+    print("ConnectView: building");
+
     return Column(
       children: [
         ContainerComponent(
@@ -44,9 +49,7 @@ class _ConnectViewState extends State<ConnectView> {
                         child: Row(
                           children: [
                             Text(
-                              name.text.isNotEmpty
-                                  ? name.text
-                                  : "New Connection",
+                              config.name ?? "New config",
                               style: StyleUtils.highLightStyle,
                             ),
                             BoxComponent.smallWidth,
@@ -62,9 +65,11 @@ class _ConnectViewState extends State<ConnectView> {
                                     context: context,
                                     builder: (_) {
                                       return NameEditDialog(
-                                        defaultValue: name.text,
+                                        defaultValue: config.name,
                                         saveCbk: (value) {
-                                          setState(() => name.value = value);
+                                          setState(
+                                            () => config.setName(value.text),
+                                          );
                                         },
                                       );
                                     },
@@ -95,7 +100,7 @@ class _ConnectViewState extends State<ConnectView> {
                       children: [
                         Icon(
                           FontAwesomeIcons.solidStar,
-                          color: connection.favorite
+                          color: config.favorite
                               ? Colors.yellow.shade700
                               : ThemeUtils.kText,
                         ),
@@ -108,7 +113,7 @@ class _ConnectViewState extends State<ConnectView> {
                     ),
                     onPressed: () {
                       setState(
-                        () => connection.setFavorite(!connection.favorite),
+                        () => config.setFavorite(!config.favorite),
                       );
                     },
                   ),
@@ -157,23 +162,21 @@ class _ConnectViewState extends State<ConnectView> {
                       style: StyleUtils.mediumLightStyle,
                     ),
                     onPressed: () {
-                      if (name.text.isEmpty) {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return NameEditDialog(
-                              defaultValue: name.text,
-                              saveCbk: (value) {
-                                setState(() => name.value = value);
-                                _saveConnection();
-                              },
-                            );
-                          },
-                        );
-                        return;
+                      if (config.name != null) {
+                        return _saveConfig();
                       }
 
-                      _saveConnection();
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return NameEditDialog(
+                            saveCbk: (value) {
+                              setState(() => config.setName(value.text));
+                              _saveConfig();
+                            },
+                          );
+                        },
+                      );
                     },
                   ),
                   const Spacer(),
@@ -224,10 +227,18 @@ class _ConnectViewState extends State<ConnectView> {
     );
   }
 
-  void _saveConnection() {
-    connection.setName(name.text);
-    connection.setUri(uri.text);
-    connection.save();
+  void _saveConfig() {
+    config.setUri(uri.text);
+    config.save();
+
+    configNotify.add(config);
+
+    setState(
+      () => {
+        config = ConfigModel(),
+        uri.text = "netlog://localhost:10542/",
+      },
+    );
   }
 }
 
@@ -266,7 +277,7 @@ class _NameEditDialogState extends State<NameEditDialog> {
         borderRadius: BorderRadius.circular(15),
       ),
       title: const Text(
-        "Choose a name for the connection",
+        "Choose a name for the config",
         style: StyleUtils.highLightStyle,
       ),
       content: StatefulBuilder(
@@ -304,7 +315,7 @@ class _NameEditDialogState extends State<NameEditDialog> {
           padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
           clickable: controller.text.isNotEmpty,
           content: const Text(
-            "Save",
+            "Confirm",
             style: StyleUtils.regularLightStyle,
           ),
           onPressed: () {

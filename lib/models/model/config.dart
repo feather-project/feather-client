@@ -38,12 +38,9 @@ class ConfigModel {
   }
 
   void save() {
-    final bytes = utf8.encode(name!);
-    final digest = sha256.convert(bytes);
-
     final installDir = Platforms.getInstallDirectory();
     final file = File(
-      "${installDir.path}/${digest.toString()}.json",
+      "${installDir.path}/${getUuid()}.json",
     );
 
     file.createSync(recursive: true);
@@ -60,5 +57,11 @@ class ConfigModel {
 
   void setUri(String str) {
     uri = str;
+  }
+
+  String getUuid() {
+    final bytes = utf8.encode(name!);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
   }
 }
