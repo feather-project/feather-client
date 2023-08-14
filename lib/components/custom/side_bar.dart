@@ -1,8 +1,12 @@
+import 'package:feather_client/views/views.dart';
 import 'package:flutter/material.dart';
 
-import 'package:feather_client/components/components.dart';
-import 'package:feather_client/utils/utils.dart';
+import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'package:feather_client/components/components.dart';
+import 'package:feather_client/miscellaneous/notifiers/view.dart';
+import 'package:feather_client/utils/utils.dart';
 
 class SidebarComponent extends StatefulWidget {
   final List<Widget> saved;
@@ -26,6 +30,8 @@ class SidebarComponent extends StatefulWidget {
 }
 
 class _SidebarComponentState extends State<SidebarComponent> {
+  late final view = Provider.of<ViewNotifier>(context, listen: false);
+
   bool isHoverRecent = false;
   bool isHoverSaved = false;
 
@@ -61,7 +67,7 @@ class _SidebarComponentState extends State<SidebarComponent> {
                     )
                   ],
                 ),
-                onPressed: () {},
+                onPressed: () => view.set(const ConnectView()),
               ),
             ),
             BoxComponent.mediumHeight,
@@ -265,7 +271,7 @@ class _SidebarComponentState extends State<SidebarComponent> {
               color: ThemeUtils.kText,
               size: 20,
             ),
-            onPressed: () {},
+            onPressed: () => view.set(const SettingsView()),
           ),
           BoxComponent.mediumWidth,
         ],

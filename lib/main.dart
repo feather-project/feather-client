@@ -1,4 +1,5 @@
 import 'package:feather_client/miscellaneous/notifiers/config.dart';
+import 'package:feather_client/miscellaneous/notifiers/view.dart';
 import 'package:feather_client/miscellaneous/platforms.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +24,9 @@ class Client extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<ConfigNotifier>(
           create: (_) => ConfigNotifier(),
+        ),
+        ChangeNotifierProvider<ViewNotifier>(
+          create: (_) => ViewNotifier(),
         ),
       ],
       child: MaterialApp(

@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
+
+import 'package:file_selector/file_selector.dart';
+
 import 'package:feather_client/miscellaneous/platforms.dart';
 import 'package:feather_client/models/models.dart';
 import 'package:feather_client/utils/utils.dart';
-import 'package:file_selector/file_selector.dart';
-import 'package:flutter/material.dart';
 
 class ConfigNotifier extends ChangeNotifier {
   List<ConfigModel> configs = [];
@@ -31,7 +33,7 @@ class ConfigNotifier extends ChangeNotifier {
   }
 
   void _notify() {
-    print("Notified");
+    print("ConfigNotifier: Notified listeners.");
     notifyListeners();
   }
 
@@ -52,9 +54,7 @@ class ConfigNotifier extends ChangeNotifier {
   Future<void> export() async {
     const name = "viewer-connections.json";
 
-    final location = await getSaveLocation(
-      suggestedName: name,
-    );
+    final location = await getSaveLocation(suggestedName: name);
     if (location == null) return;
 
     final json = {
@@ -69,9 +69,29 @@ class ConfigNotifier extends ChangeNotifier {
     ).saveTo(location.path);
   }
 
-  Future<void> import() async {}
+  Future<void> import() async {
+    const extensions = XTypeGroup(
+      label: 'json',
+      extensions: <String>['json'],
+    );
 
-  void reset() {
+    final file = await openFile(
+      acceptedTypeGroups: <XTypeGroup>[extensions],
+    );
+    if (file == null) return;
+
+    final json = jsonDecode(await file.readAsString());
+    final configs = json['connections'] as List<dynamic>;
+    final models = configs.map((e) => ConfigModel.fromJson(e)).toList();
+
+    for (final model in models) {
+      model.save();
+    }
+
+    addAll(models);
+  }
+
+  void clearFavorites() {
     final List<ConfigModel> models = [];
     for (final file in Platforms.getInstallDirectory().listSync()) {
       models.add(ConfigModel.fromFile(file)
@@ -79,7 +99,7 @@ class ConfigNotifier extends ChangeNotifier {
         ..save());
     }
 
-    clear();
+    configs.clear();
     addAll(models);
   }
 }

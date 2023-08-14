@@ -1,10 +1,10 @@
+import 'package:feather_client/miscellaneous/notifiers/view.dart';
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:feather_client/miscellaneous/notifiers/config.dart';
 import 'package:feather_client/components/components.dart';
-import 'package:feather_client/views/views.dart';
 import 'package:feather_client/models/models.dart';
 import 'package:feather_client/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -18,8 +18,7 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   late final config = Provider.of<ConfigNotifier>(context);
-
-  Widget view = const ConnectView();
+  late final view = Provider.of<ViewNotifier>(context);
 
   @override
   void initState() {
@@ -55,14 +54,14 @@ class _DashboardPageState extends State<DashboardPage> {
       ],
       exportCbk: () => config.export(),
       importCbk: () => config.import(),
-      clearCbk: () => config.reset(),
+      clearCbk: () => config.clearFavorites(),
     );
   }
 
   Widget _buildContent() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(280, 10, 20, 10),
-      child: view,
+      child: view.widget,
     );
   }
 
