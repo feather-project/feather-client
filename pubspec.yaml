@@ -17,6 +17,7 @@ dependencies:
   uuid: ^3.0.6
   crypto: ^3.0.3
   provider: ^5.0.0
+  flutter_client_sse: ^1.0.0
 
 dev_dependencies:
   flutter_test:

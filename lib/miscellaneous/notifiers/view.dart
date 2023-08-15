@@ -6,6 +6,7 @@ class ViewNotifier extends ChangeNotifier {
 
   void set(Widget widget) {
     if (this.widget == widget) return;
+    if (this.widget.key == widget.key) return;
 
     this.widget = widget;
     _notify();

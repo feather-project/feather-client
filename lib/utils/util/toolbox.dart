@@ -79,3 +79,13 @@ extension MapUtils<A, B> on Map<A, B> {
     return Map.fromEntries(entryList);
   }
 }
+
+extension SnapshotUtils on AsyncSnapshot {
+  bool get isWaiting => connectionState == ConnectionState.waiting;
+  bool get isDone => connectionState == ConnectionState.done;
+  bool get isActive => connectionState == ConnectionState.active;
+  bool get isNone => connectionState == ConnectionState.none;
+
+  bool get isLoading => isWaiting && !hasData;
+  bool get hasError => isDone && !hasData;
+}

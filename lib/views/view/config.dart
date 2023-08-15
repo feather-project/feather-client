@@ -1,34 +1,38 @@
+import 'package:feather_client/pages/pages.dart';
 import 'package:flutter/material.dart';
 
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 import 'package:provider/provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'package:feather_client/miscellaneous/validations.dart';
 import 'package:feather_client/miscellaneous/dialogs.dart';
 import 'package:feather_client/miscellaneous/notifiers/config.dart';
-import 'package:feather_client/miscellaneous/validations.dart';
 import 'package:feather_client/components/components.dart';
 import 'package:feather_client/models/models.dart';
 import 'package:feather_client/utils/utils.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
-class ConnectView extends StatefulWidget {
-  const ConnectView({super.key});
+class ConfigView extends StatefulWidget {
+  final ConfigModel config;
+
+  const ConfigView({
+    super.key,
+    required this.config,
+  });
 
   @override
-  State<ConnectView> createState() => _ConnectViewState();
+  State<ConfigView> createState() => _ConfigViewState();
 }
 
-class _ConnectViewState extends State<ConnectView> {
+class _ConfigViewState extends State<ConfigView> {
   late final configNotify = Provider.of<ConfigNotifier>(context, listen: false);
-  ConfigModel config = ConfigModel();
+  late ConfigModel config = widget.config;
 
-  final uri = TextEditingController(text: "http://localhost:10542/");
+  late final uri = TextEditingController(text: widget.config.uri);
   bool isNameFieldHoverred = false;
 
   @override
   Widget build(BuildContext context) {
-    print("ConnectView: building");
-
     return Column(
       children: [
         ContainerComponent(
@@ -38,29 +42,13 @@ class _ConnectViewState extends State<ConnectView> {
           borderRadius: BorderRadius.circular(15),
           padding: const EdgeInsets.fromLTRB(45, 30, 45, 30),
           content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildHeader(),
               BoxComponent.mediumHeight,
               ..._buildContent(),
               BoxComponent.bigHeight,
               _buildFooter(),
-            ],
-          ),
-        ),
-        BoxComponent.smallHeight,
-        ContainerComponent(
-          height: 250,
-          width: MediaQuery.of(context).size.width,
-          color: ThemeUtils.kPrimaryButton,
-          borderRadius: BorderRadius.circular(15),
-          padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-          content: const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Placeholder for information",
-                style: StyleUtils.regularLightStyle,
-              ),
             ],
           ),
         ),
@@ -78,7 +66,7 @@ class _ConnectViewState extends State<ConnectView> {
               child: Row(
                 children: [
                   Text(
-                    config.name ?? "New config",
+                    config.name!,
                     style: StyleUtils.highLightStyle,
                   ),
                   BoxComponent.smallWidth,
@@ -97,7 +85,9 @@ class _ConnectViewState extends State<ConnectView> {
                               defaultValue: config.name,
                               saveCbk: (value) {
                                 setState(
-                                  () => config.setName(value.text),
+                                  () => widget.config.setName(
+                                    value.text,
+                                  ),
                                 );
                               },
                             );
@@ -183,10 +173,7 @@ class _ConnectViewState extends State<ConnectView> {
               context: context,
               builder: (context) {
                 return NameEditDialog(
-                  saveCbk: (value) {
-                    setState(() => config.setName(value.text));
-                    _saveConfig();
-                  },
+                  saveCbk: (value) => _saveConfig(name: value.text),
                 );
               },
             );
@@ -201,7 +188,13 @@ class _ConnectViewState extends State<ConnectView> {
             "Save & Connect",
             style: StyleUtils.mediumLightStyle,
           ),
-          onPressed: () {},
+          onPressed: () {
+            _saveConfig();
+
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => ManagerPage(config: config),
+            ));
+          },
         ),
         BoxComponent.smallWidth,
         ButtonComponent(
@@ -212,7 +205,11 @@ class _ConnectViewState extends State<ConnectView> {
             "Connect",
             style: StyleUtils.mediumLightStyle,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => ManagerPage(config: config),
+            ));
+          },
         ),
       ],
     );
@@ -242,17 +239,11 @@ class _ConnectViewState extends State<ConnectView> {
     );
   }
 
-  void _saveConfig() {
+  void _saveConfig({String? name}) {
+    if (name != null) config.setName(name);
     config.setUri(uri.text);
     config.save();
 
-    configNotify.add(config);
-
-    setState(
-      () => {
-        config = ConfigModel(),
-        uri.text = "http://localhost:10542/",
-      },
-    );
+    configNotify.add(widget.config);
   }
 }

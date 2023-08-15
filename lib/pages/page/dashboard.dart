@@ -1,4 +1,5 @@
 import 'package:feather_client/miscellaneous/notifiers/view.dart';
+import 'package:feather_client/views/views.dart';
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -76,7 +77,9 @@ class _DashboardPageState extends State<DashboardPage> {
         color: ThemeUtils.kText,
         size: 20,
       ),
-      onPress: () {},
+      onPress: () => viewNotify.set(
+        ConfigView(key: Key(model.name!), config: model),
+      ),
     );
   }
 }
