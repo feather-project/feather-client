@@ -6,5 +6,5 @@ class Constants {
   static DateFormat kFrenchDateFormat = DateFormat('dd/MM/yyyy');
   static DateFormat kFrenchFullFormat = DateFormat('dd/MM/yyyy à HH:mm');
 
-  static Uuid kUuid = const Uuid();
+  static String kUuid = const Uuid().v5(Uuid.NAMESPACE_URL, 'feather_logger');
 }

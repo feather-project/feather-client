@@ -11,6 +11,7 @@ import 'package:feather_client/utils/utils.dart';
 
 class ConfigNotifier extends ChangeNotifier {
   Map<String, ConfigModel> configs = {};
+  ConfigModel? current;
 
   void add(ConfigModel model) {
     configs[model.getUuid()] = model;
@@ -25,12 +26,24 @@ class ConfigNotifier extends ChangeNotifier {
   }
 
   void remove(String uuid) {
-    configs.remove(uuid);
+    final config = configs.remove(uuid);
+
+    if (current != null && config == current) {
+      current = null;
+    }
+    _notify();
+  }
+
+  void setCurrent({ConfigModel? model}) {
+    if (model == current) return;
+
+    current = model;
     _notify();
   }
 
   void clear() {
     configs.clear();
+    current = null;
     _notify();
   }
 
@@ -48,9 +61,14 @@ class ConfigNotifier extends ChangeNotifier {
   }
 
   void load() {
-    for (final file in Platforms.getInstallDirectory().listSync()) {
-      add(ConfigModel.fromFile(file));
-    }
+    final configs = Platforms.getInstallDirectory()
+        .listSync()
+        .map((file) => ConfigModel.fromFile(file))
+        .toList();
+
+    addAll(configs);
+
+    print("ConfigNotifier: Loaded ${configs.length} configs.");
   }
 
   Future<void> export() async {

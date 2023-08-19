@@ -18,15 +18,15 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  late final configNotify = Provider.of<ConfigNotifier>(context);
-  late final viewNotify = Provider.of<ViewNotifier>(context);
+  late final config = Provider.of<ConfigNotifier>(context);
+  late final view = Provider.of<ViewNotifier>(context);
 
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) => configNotify.load(),
+      (timeStamp) => config.load(),
     );
   }
 
@@ -42,34 +42,36 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildSidebar() {
-    return SidebarComponent(
+    return DashboardSidebar(
       saved: [
-        for (final model in configNotify.getConfigs()) ...[
+        for (final model in config.getConfigs()) ...[
           _buildSidebarItem(model),
         ],
       ],
       favorites: [
-        for (final model in configNotify.getFavorites()) ...[
+        for (final model in config.getFavorites()) ...[
           _buildSidebarItem(model),
         ],
       ],
-      exportCbk: () => configNotify.export(),
-      importCbk: () => configNotify.import(),
-      clearCbk: () => configNotify.clearFavorites(),
+      exportCbk: () => config.export(),
+      importCbk: () => config.import(),
+      clearCbk: () => config.clearFavorites(),
     );
   }
 
   Widget _buildContent() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(280, 10, 20, 10),
-      child: viewNotify.widget,
+      child: view.widget,
     );
   }
 
   SidebarItem _buildSidebarItem(ConfigModel model) {
+    final configName = model.name!;
+
     return SidebarItem(
       title: Text(
-        model.name!,
+        configName,
         style: StyleUtils.regularLightStyle,
       ),
       leading: const Icon(
@@ -77,9 +79,11 @@ class _DashboardPageState extends State<DashboardPage> {
         color: ThemeUtils.kText,
         size: 20,
       ),
-      onPress: () => viewNotify.set(
-        ConfigView(key: Key(model.name!), config: model),
-      ),
+      selected: view.isSame(Key(configName)),
+      onTap: () => {
+        config.setCurrent(model: model),
+        view.set(ConfigView(key: Key(configName), model: model)),
+      },
     );
   }
 }

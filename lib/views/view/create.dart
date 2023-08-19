@@ -11,14 +11,14 @@ import 'package:feather_client/components/components.dart';
 import 'package:feather_client/models/models.dart';
 import 'package:feather_client/utils/utils.dart';
 
-class ConnectView extends StatefulWidget {
-  const ConnectView({super.key});
+class CreateView extends StatefulWidget {
+  const CreateView({super.key});
 
   @override
-  State<ConnectView> createState() => _ConnectViewState();
+  State<CreateView> createState() => _CreateViewState();
 }
 
-class _ConnectViewState extends State<ConnectView> {
+class _CreateViewState extends State<CreateView> {
   late final configNotify = Provider.of<ConfigNotifier>(context, listen: false);
   ConfigModel config = ConfigModel();
 
@@ -27,8 +27,6 @@ class _ConnectViewState extends State<ConnectView> {
 
   @override
   Widget build(BuildContext context) {
-    print("ConnectView: building");
-
     return Column(
       children: [
         ContainerComponent(

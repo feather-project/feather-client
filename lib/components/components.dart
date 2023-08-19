@@ -7,4 +7,7 @@ export 'component/page.dart';
 export 'component/tip.dart';
 export 'component/watermark.dart';
 
-export 'custom/side_bar.dart';
+export 'custom/dashboard_sidebar.dart';
+
+export 'component/sidebar/item.dart';
+export 'component/sidebar/drawer.dart';

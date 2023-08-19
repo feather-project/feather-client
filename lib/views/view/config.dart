@@ -1,23 +1,24 @@
-import 'package:feather_client/pages/pages.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
-import 'package:feather_client/miscellaneous/validations.dart';
-import 'package:feather_client/miscellaneous/dialogs.dart';
-import 'package:feather_client/miscellaneous/notifiers/config.dart';
+import 'package:feather_client/pages/pages.dart';
 import 'package:feather_client/components/components.dart';
 import 'package:feather_client/models/models.dart';
 import 'package:feather_client/utils/utils.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+
+import 'package:feather_client/miscellaneous/validations.dart';
+import 'package:feather_client/miscellaneous/notifiers/config.dart';
+import 'package:feather_client/miscellaneous/dialogs.dart';
 
 class ConfigView extends StatefulWidget {
-  final ConfigModel config;
+  final ConfigModel model;
 
   const ConfigView({
     super.key,
-    required this.config,
+    required this.model,
   });
 
   @override
@@ -26,9 +27,9 @@ class ConfigView extends StatefulWidget {
 
 class _ConfigViewState extends State<ConfigView> {
   late final configNotify = Provider.of<ConfigNotifier>(context, listen: false);
-  late ConfigModel config = widget.config;
+  late ConfigModel model = widget.model;
 
-  late final uri = TextEditingController(text: widget.config.uri);
+  late final uri = TextEditingController(text: widget.model.uri);
   bool isNameFieldHoverred = false;
 
   @override
@@ -66,7 +67,7 @@ class _ConfigViewState extends State<ConfigView> {
               child: Row(
                 children: [
                   Text(
-                    config.name!,
+                    model.name!,
                     style: StyleUtils.highLightStyle,
                   ),
                   BoxComponent.smallWidth,
@@ -82,10 +83,10 @@ class _ConfigViewState extends State<ConfigView> {
                           context: context,
                           builder: (_) {
                             return NameEditDialog(
-                              defaultValue: config.name,
+                              defaultValue: model.name,
                               saveCbk: (value) {
                                 setState(
-                                  () => widget.config.setName(
+                                  () => widget.model.setName(
                                     value.text,
                                   ),
                                 );
@@ -113,7 +114,7 @@ class _ConfigViewState extends State<ConfigView> {
           ],
         ),
         const Spacer(),
-        _buildFavoriteButton(config.favorite),
+        _buildFavoriteButton(model.favorite),
       ],
     );
   }
@@ -165,7 +166,7 @@ class _ConfigViewState extends State<ConfigView> {
             style: StyleUtils.mediumLightStyle,
           ),
           onPressed: () {
-            if (config.name != null) {
+            if (model.name != null) {
               return _saveConfig();
             }
 
@@ -192,7 +193,7 @@ class _ConfigViewState extends State<ConfigView> {
             _saveConfig();
 
             Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => ManagerPage(config: config),
+              builder: (context) => ConnectionPage(model: model),
             ));
           },
         ),
@@ -207,7 +208,7 @@ class _ConfigViewState extends State<ConfigView> {
           ),
           onPressed: () {
             Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => ManagerPage(config: config),
+              builder: (context) => ConnectionPage(model: model),
             ));
           },
         ),
@@ -233,17 +234,17 @@ class _ConfigViewState extends State<ConfigView> {
       ),
       onPressed: () {
         setState(() {
-          config.setFavorite(!isFavorite);
+          model.setFavorite(!isFavorite);
         });
       },
     );
   }
 
   void _saveConfig({String? name}) {
-    if (name != null) config.setName(name);
-    config.setUri(uri.text);
-    config.save();
+    if (name != null) model.setName(name);
+    model.setUri(uri.text);
+    model.save();
 
-    configNotify.add(widget.config);
+    configNotify.add(widget.model);
   }
 }

@@ -16,7 +16,7 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
-  late final configNotify = Provider.of<ConfigNotifier>(context, listen: false);
+  late final config = Provider.of<ConfigNotifier>(context, listen: false);
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,7 @@ class _SettingsViewState extends State<SettingsView> {
                     builder: (context) => _buildSuccessDialog(),
                   );
 
-                  configNotify.clear();
+                  config.clear();
                 },
               ),
               BoxComponent.mediumHeight,

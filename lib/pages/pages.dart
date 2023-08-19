@@ -1,2 +1,3 @@
 export 'page/dashboard.dart';
-export 'page/manager.dart';
+export 'page/connection.dart';
+export 'page/browser.dart';

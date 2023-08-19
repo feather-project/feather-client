@@ -6,5 +6,5 @@ class EnvUtils {
 
   static const String kWatermark = "$kProject $kName - $kCompany";
 
-  static const String kWebsite = "https://feather.noideaindustry.com/";
+  static const String kWebsite = "https://feather.noideaindustry.com";
 }
