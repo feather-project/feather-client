@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -25,21 +23,37 @@ class _BrowserPageState extends State<BrowserPage> {
   void initState() {
     super.initState();
 
-    notify.connection.channel!.stream.transform(utf8.decoder).listen((line) {
-      print('Received: $line');
-    }, onError: (error) {
-      print('Error: $error');
-    }, onDone: () {
-      print('Connection closed.');
-    });
+    notify.connection?.listen(
+      onReceivedCallback,
+      onError: onErrorCallback,
+      onDone: onDoneCallback,
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    notify.close();
   }
 
   @override
   Widget build(BuildContext context) {
     return PageComponent(
       name: 'Browser',
-      sideBar: BrowserSidebar(name: ''),
+      sideBar: BrowserSidebar(name: config.current!.name!),
       content: [],
     );
+  }
+
+  void onReceivedCallback(String line) {
+    print(line);
+  }
+
+  void onErrorCallback(dynamic error) {
+    print('$error');
+  }
+
+  void onDoneCallback() {
+    print('Connection done');
   }
 }

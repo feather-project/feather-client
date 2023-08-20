@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 import 'package:feather_client/utils/utils.dart';
+import 'package:feather_client/pages/pages.dart';
 import 'package:feather_client/components/components.dart';
+import 'package:feather_client/miscellaneous/notifiers/config.dart';
+import 'package:feather_client/miscellaneous/notifiers/connection.dart';
 
 class BrowserSidebar extends StatefulWidget {
   final String name;
@@ -15,6 +19,9 @@ class BrowserSidebar extends StatefulWidget {
 }
 
 class _BrowserSidebarState extends State<BrowserSidebar> {
+  late final notify = Provider.of<ConnectionNotifier>(context, listen: false);
+  late final config = Provider.of<ConfigNotifier>(context, listen: false);
+
   @override
   Widget build(BuildContext context) {
     return DrawerComponent(
@@ -43,11 +50,17 @@ class _BrowserSidebarState extends State<BrowserSidebar> {
           ),
           IconButtonComponent(
             widget: const Icon(
-              FontAwesomeIcons.gear,
+              FontAwesomeIcons.arrowRightFromBracket,
               color: ThemeUtils.kText,
               size: 20,
             ),
-            onPressed: () {},
+            onPressed: () {
+              notify.connection?.close();
+              config.setCurrent();
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => const DashboardPage(),
+              ));
+            },
           ),
           BoxComponent.mediumWidth,
         ],

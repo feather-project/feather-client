@@ -55,7 +55,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
 
   List<Widget> _buildWaitingConnection() {
     return [
-      const CircularProgressIndicator(),
+      const CircularProgressIndicator(color: ThemeUtils.kText),
       BoxComponent.smallHeight,
       const Text(
         "Etablishing connection with remote server...",
@@ -156,7 +156,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
     });
 
     return [
-      const CircularProgressIndicator(),
+      const CircularProgressIndicator(color: ThemeUtils.kText),
       BoxComponent.smallHeight,
       const Text(
         "Redirection in progress...",

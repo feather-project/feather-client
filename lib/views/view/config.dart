@@ -26,7 +26,7 @@ class ConfigView extends StatefulWidget {
 }
 
 class _ConfigViewState extends State<ConfigView> {
-  late final configNotify = Provider.of<ConfigNotifier>(context, listen: false);
+  late final config = Provider.of<ConfigNotifier>(context, listen: false);
   late ConfigModel model = widget.model;
 
   late final uri = TextEditingController(text: widget.model.uri);
@@ -72,30 +72,7 @@ class _ConfigViewState extends State<ConfigView> {
                   ),
                   BoxComponent.smallWidth,
                   if (isNameFieldHoverred) ...[
-                    IconButtonComponent(
-                      widget: const Icon(
-                        FontAwesomeIcons.pen,
-                        color: ThemeUtils.kText,
-                        size: 20,
-                      ),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (_) {
-                            return NameEditDialog(
-                              defaultValue: model.name,
-                              saveCbk: (value) {
-                                setState(
-                                  () => widget.model.setName(
-                                    value.text,
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        );
-                      },
-                    ),
+                    _buildEditButton(),
                   ],
                 ],
               ),
@@ -116,6 +93,33 @@ class _ConfigViewState extends State<ConfigView> {
         const Spacer(),
         _buildFavoriteButton(model.favorite),
       ],
+    );
+  }
+
+  Widget _buildEditButton() {
+    return IconButtonComponent(
+      widget: const Icon(
+        FontAwesomeIcons.pen,
+        color: ThemeUtils.kText,
+        size: 20,
+      ),
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (_) {
+            return NameEditDialog(
+              defaultValue: model.name,
+              saveCbk: (value) {
+                setState(
+                  () => widget.model.setName(
+                    value.text,
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 
@@ -207,6 +211,7 @@ class _ConfigViewState extends State<ConfigView> {
             style: StyleUtils.mediumLightStyle,
           ),
           onPressed: () {
+            config.setCurrent(model: model);
             Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (context) => ConnectionPage(model: model),
             ));
@@ -245,6 +250,6 @@ class _ConfigViewState extends State<ConfigView> {
     model.setUri(uri.text);
     model.save();
 
-    configNotify.add(widget.model);
+    config.add(widget.model);
   }
 }
