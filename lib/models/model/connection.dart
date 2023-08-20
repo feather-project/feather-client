@@ -1,23 +1,20 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:http/http.dart' as http;
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class ConnectionModel {
-  final client = http.Client();
-  http.StreamedResponse? channel;
+  WebSocketChannel? channel;
   StreamSubscription? stream;
 
   final String uri;
-  final String uuid;
+  final String clientId;
 
-  ConnectionModel(this.uuid, this.uri);
+  ConnectionModel(this.clientId, this.uri);
 
   Future<bool> connect() async {
     try {
-      final url = "$uri/connect?uuid=$uuid";
-      final request = http.Request('GET', Uri.parse(url));
-      channel = await client.send(request);
+      final url = "$uri?clientId=$clientId";
+      channel = WebSocketChannel.connect(Uri.parse(url));
     } catch (e) {
       channel = null;
     }
@@ -25,11 +22,8 @@ class ConnectionModel {
   }
 
   void close() {
+    channel?.sink.close();
     stream?.cancel();
-    client.close();
-
-    channel = null;
-    stream = null;
   }
 
   void listen(
@@ -37,12 +31,16 @@ class ConnectionModel {
     void Function(dynamic)? onError,
     void Function()? onDone,
   }) {
-    stream = channel!.stream.transform(utf8.decoder).listen((line) {
-      onReceived(line);
+    stream = channel!.stream.listen((message) {
+      onReceived(message);
     }, onError: (error) {
       onError?.call(error);
     }, onDone: () {
       onDone?.call();
     });
+  }
+
+  void send(String message) {
+    channel?.sink.add(message);
   }
 }

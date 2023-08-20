@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:feather_client/utils/utils.dart';
 import 'package:feather_client/pages/pages.dart';
 import 'package:feather_client/components/components.dart';
-import 'package:feather_client/miscellaneous/notifiers/config.dart';
 import 'package:feather_client/miscellaneous/notifiers/connection.dart';
 
 class BrowserSidebar extends StatefulWidget {
@@ -19,9 +18,6 @@ class BrowserSidebar extends StatefulWidget {
 }
 
 class _BrowserSidebarState extends State<BrowserSidebar> {
-  late final notify = Provider.of<ConnectionNotifier>(context, listen: false);
-  late final config = Provider.of<ConfigNotifier>(context, listen: false);
-
   @override
   Widget build(BuildContext context) {
     return DrawerComponent(
@@ -55,8 +51,8 @@ class _BrowserSidebarState extends State<BrowserSidebar> {
               size: 20,
             ),
             onPressed: () {
-              notify.connection?.close();
-              config.setCurrent();
+              Provider.of<ConnectionNotifier>(context, listen: false).close();
+
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => const DashboardPage(),
               ));

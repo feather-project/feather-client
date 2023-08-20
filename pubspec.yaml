@@ -19,6 +19,7 @@ dependencies:
   provider: ^5.0.0
   flutter_client_sse: ^1.0.0
   http: ^0.13.6
+  web_socket_channel: ^2.4.0
 
 dev_dependencies:
   flutter_test:

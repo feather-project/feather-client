@@ -32,6 +32,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
   @override
   void initState() {
     super.initState();
+
     SchedulerBinding.instance.addPostFrameCallback(
       (timeStamp) => _connectToDeployment(),
     );
@@ -151,7 +152,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
   List<Widget> _buildSuccessConnection() {
     Future.delayed(const Duration(seconds: 1), () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const BrowserPage(),
+        builder: (context) => BrowserPage(config: widget.model),
       ));
     });
 

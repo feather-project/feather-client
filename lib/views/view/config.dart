@@ -212,6 +212,7 @@ class _ConfigViewState extends State<ConfigView> {
           ),
           onPressed: () {
             config.setCurrent(model: model);
+
             Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (context) => ConnectionPage(model: model),
             ));

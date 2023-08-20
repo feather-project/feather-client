@@ -16,10 +16,7 @@ class ConnectionNotifier extends ChangeNotifier {
 
   void close() {
     connection?.close();
-    connection = null;
-
     _notify();
-    print("ez");
   }
 
   void listen(
@@ -28,6 +25,10 @@ class ConnectionNotifier extends ChangeNotifier {
     void Function()? onDone,
   }) {
     connection?.listen(onReceived, onError: onError, onDone: onDone);
+  }
+
+  void send(String message) {
+    connection?.send(message);
   }
 
   void _notify() {
