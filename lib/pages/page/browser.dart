@@ -1,14 +1,20 @@
 import 'dart:convert';
 
-import 'package:feather_client/models/model/config.dart';
-import 'package:feather_client/utils/utils.dart';
+import 'package:feather_client/miscellaneous/notifiers/logs.dart';
+import 'package:feather_client/models/model/file.dart';
+import 'package:feather_client/views/views.dart';
 import 'package:flutter/material.dart';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'package:feather_client/components/components.dart';
+import 'package:feather_client/models/model/config.dart';
+import 'package:feather_client/utils/utils.dart';
 import 'package:feather_client/components/custom/browser_sidebar.dart';
+
 import 'package:feather_client/miscellaneous/notifiers/connection.dart';
+import 'package:feather_client/miscellaneous/notifiers/view.dart';
 
 import 'dashboard.dart';
 
@@ -23,10 +29,14 @@ class BrowserPage extends StatefulWidget {
 
 class _BrowserPageState extends State<BrowserPage> {
   late final notify = Provider.of<ConnectionNotifier>(context, listen: false);
+  late final view = Provider.of<ViewNotifier>(context);
+  late final logs = Provider.of<LogsNotifier>(context, listen: false);
 
   bool socketLost = false;
   String? socketError;
   String? socketReason;
+
+  List<FileModel> models = [];
 
   @override
   void initState() {
@@ -38,18 +48,15 @@ class _BrowserPageState extends State<BrowserPage> {
       onDone: onDoneCallback,
     );
 
-    /*notify.send({
-      'fileId': widget.config.name,
-      'request': 'listen',
-    }.toString());*/
+    fetchFiles();
   }
 
   @override
   Widget build(BuildContext context) {
     return PageComponent(
       name: 'Browser',
-      sideBar: socketLost ? null : BrowserSidebar(name: widget.config.name!),
-      content: socketLost ? _buildErrorContent() : [],
+      sideBar: socketLost ? null : _buildSidebar(),
+      content: socketLost ? _buildErrorContent() : [_buildContent()],
     );
   }
 
@@ -108,16 +115,68 @@ class _BrowserPageState extends State<BrowserPage> {
     ];
   }
 
-  void onReceivedCallback(String line) {
-    print(line);
+  Widget _buildSidebar() {
+    return BrowserSidebar(
+      name: widget.config.name!,
+      files: [
+        for (final model in models) ...[
+          _buildSidebarItem(model),
+        ],
+      ],
+    );
+  }
 
-    if (line.contains('reason')) {
+  Widget _buildContent() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(280, 10, 20, 10),
+      child: view.current,
+    );
+  }
+
+  SidebarItem _buildSidebarItem(FileModel model) {
+    return SidebarItem(
+      title: Text(
+        model.id,
+        style: StyleUtils.regularLightStyle,
+      ),
+      leading: const Icon(
+        FontAwesomeIcons.fileContract,
+        color: ThemeUtils.kText,
+        size: 20,
+      ),
+      onTap: () => {
+        logs.setCurrent(model: model),
+        view.setCurrent(view: const LogsView()),
+      },
+    );
+  }
+
+  void onReceivedCallback(String line) {
+    if (line.toLowerCase().contains('heartbeat')) return;
+
+    try {
       final payload = jsonDecode(line);
 
-      setState(() {
-        socketError = payload['error'];
-        socketReason = payload['reason'];
-      });
+      switch (payload['event']) {
+        case 'disconnect':
+          {
+            setState(() {
+              socketError = payload['error'] as String?;
+              socketReason = payload['reason'] as String?;
+            });
+            break;
+          }
+        case 'list':
+          {
+            setState(() {
+              models = List<String>.from(payload['files'] as List)
+                  .map((e) => FileModel(e))
+                  .toList();
+            });
+          }
+      }
+    } catch (e) {
+      print('$e');
     }
   }
 
@@ -128,5 +187,18 @@ class _BrowserPageState extends State<BrowserPage> {
   void onDoneCallback() {
     print('Connection done');
     setState(() => socketLost = true);
+  }
+
+  void listenTo(String fileId) {
+    notify.send({
+      'fileId': fileId,
+      'request': 'listen',
+    }.toString());
+  }
+
+  void fetchFiles() {
+    notify.send({
+      'request': 'list',
+    }.toString());
   }
 }

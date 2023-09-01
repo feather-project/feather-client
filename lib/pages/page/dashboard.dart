@@ -62,7 +62,7 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget _buildContent() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(280, 10, 20, 10),
-      child: view.widget,
+      child: view.current,
     );
   }
 
@@ -82,7 +82,7 @@ class _DashboardPageState extends State<DashboardPage> {
       selected: view.isSame(Key(configName)),
       onTap: () => {
         config.setCurrent(model: model),
-        view.set(ConfigView(key: Key(configName), model: model)),
+        view.setCurrent(view: ConfigView(key: Key(configName), model: model)),
       },
     );
   }

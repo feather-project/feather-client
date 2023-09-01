@@ -1,13 +1,16 @@
-import 'package:feather_client/miscellaneous/notifiers/config.dart';
-import 'package:feather_client/miscellaneous/notifiers/connection.dart';
-import 'package:feather_client/miscellaneous/notifiers/view.dart';
-import 'package:feather_client/miscellaneous/platforms.dart';
 import 'package:flutter/material.dart';
+
+import 'package:window_manager/window_manager.dart';
+import 'package:provider/provider.dart';
 
 import 'package:feather_client/pages/pages.dart';
 import 'package:feather_client/utils/utils.dart';
-import 'package:provider/provider.dart';
-import 'package:window_manager/window_manager.dart';
+
+import 'package:feather_client/miscellaneous/notifiers/config.dart';
+import 'package:feather_client/miscellaneous/notifiers/connection.dart';
+import 'package:feather_client/miscellaneous/notifiers/logs.dart';
+import 'package:feather_client/miscellaneous/notifiers/view.dart';
+import 'package:feather_client/miscellaneous/platforms.dart';
 
 void main() {
   runApp(const Client());
@@ -31,6 +34,9 @@ class Client extends StatelessWidget {
         ),
         ChangeNotifierProvider<ConnectionNotifier>(
           create: (_) => ConnectionNotifier(),
+        ),
+        ChangeNotifierProvider<LogsNotifier>(
+          create: (_) => LogsNotifier(),
         ),
       ],
       child: MaterialApp(

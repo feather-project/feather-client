@@ -2,16 +2,16 @@ import 'package:feather_client/views/view/create.dart';
 import 'package:flutter/material.dart';
 
 class ViewNotifier extends ChangeNotifier {
-  Widget widget = const CreateView();
+  Widget? current = const CreateView();
 
-  void set(Widget widget) {
-    if (this.widget.key == widget.key) return;
-    this.widget = widget;
+  void setCurrent({Widget? view}) {
+    if (current?.key == view?.key) return;
+    current = view;
     _notify();
   }
 
   bool isSame(Key key) {
-    return widget.key == key;
+    return current?.key == key;
   }
 
   void _notify() {

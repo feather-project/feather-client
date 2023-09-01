@@ -10,8 +10,9 @@ import 'package:feather_client/models/models.dart';
 import 'package:feather_client/utils/utils.dart';
 
 import 'package:feather_client/miscellaneous/validations.dart';
-import 'package:feather_client/miscellaneous/notifiers/config.dart';
 import 'package:feather_client/miscellaneous/dialogs.dart';
+import 'package:feather_client/miscellaneous/notifiers/config.dart';
+import 'package:feather_client/miscellaneous/notifiers/view.dart';
 
 class ConfigView extends StatefulWidget {
   final ConfigModel model;
@@ -27,6 +28,8 @@ class ConfigView extends StatefulWidget {
 
 class _ConfigViewState extends State<ConfigView> {
   late final config = Provider.of<ConfigNotifier>(context, listen: false);
+  late final view = Provider.of<ViewNotifier>(context, listen: false);
+
   late ConfigModel model = widget.model;
 
   late final uri = TextEditingController(text: widget.model.uri);
@@ -212,6 +215,7 @@ class _ConfigViewState extends State<ConfigView> {
           ),
           onPressed: () {
             config.setCurrent(model: model);
+            view.setCurrent();
 
             Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (context) => ConnectionPage(model: model),

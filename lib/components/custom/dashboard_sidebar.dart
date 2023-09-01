@@ -102,7 +102,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
             )
           ],
         ),
-        onPressed: () => view.set(const CreateView()),
+        onPressed: () => view.setCurrent(view: const CreateView()),
       ),
     );
   }
@@ -277,7 +277,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
             ),
             onPressed: () {
               config.setCurrent();
-              view.set(const SettingsView());
+              view.setCurrent();
             },
           ),
           BoxComponent.mediumWidth,
